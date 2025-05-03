@@ -19,7 +19,6 @@ const pool = new Pool({
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
   port: parseInt(process.env.DB_PORT, 10),
-,
   ssl: {
     rejectUnauthorized: false, // needed for Render's self-signed cert
   }
