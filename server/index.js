@@ -12,7 +12,7 @@ app.use(cors({
   credentials: true
   ssl: {
     rejectUnauthorized: false, // needed for Render's self-signed cert
-  },
+  }
 }));
 app.use(express.json());
 
