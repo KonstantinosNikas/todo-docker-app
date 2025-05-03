@@ -10,6 +10,9 @@ app.use(cors({
   methods: ['GET', 'POST', 'DELETE'],
   allowedHeaders: ['Content-Type'],
   credentials: true
+  ssl: {
+    rejectUnauthorized: false, // needed for Render's self-signed cert
+  },
 }));
 app.use(express.json());
 
