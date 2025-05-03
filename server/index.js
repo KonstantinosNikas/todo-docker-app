@@ -10,9 +10,6 @@ app.use(cors({
   methods: ['GET', 'POST', 'DELETE'],
   allowedHeaders: ['Content-Type'],
   credentials: true
-  ssl: {
-    rejectUnauthorized: false, // needed for Render's self-signed cert
-  }
 }));
 app.use(express.json());
 
@@ -22,6 +19,9 @@ const pool = new Pool({
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
   port: process.env.DB_PORT,
+  ssl: {
+    rejectUnauthorized: false, // needed for Render's self-signed cert
+  }
 });
 
 pool.query(`
