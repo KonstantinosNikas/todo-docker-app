@@ -6,14 +6,15 @@ const { Pool } = pkg;
 const app = express();
 
 app.use(cors({
-  origin: 'http://localhost:5173', // or use '*' for production
+  origin: 'http://localhost:5173', // or '*' for production
   methods: ['GET', 'POST', 'DELETE'],
   allowedHeaders: ['Content-Type'],
   credentials: true
 }));
 app.use(express.json());
 
-try {
+async function startServer() {
+  try {
     const pool = new Pool({
       host: process.env.DB_HOST,
       user: process.env.DB_USER,
@@ -22,8 +23,6 @@ try {
       port: parseInt(process.env.DB_PORT, 10)
     });
 
-
-    // ✅ Ensure table exists
     await pool.query(`
       CREATE TABLE IF NOT EXISTS todos (
         id SERIAL PRIMARY KEY,
@@ -31,7 +30,6 @@ try {
       );
     `);
 
-    // ✅ Routes
     app.get('/todos', async (req, res) => {
       const result = await pool.query('SELECT * FROM todos ORDER BY id DESC');
       res.json(result.rows);
@@ -49,16 +47,14 @@ try {
       res.status(200).json({ message: 'Deleted' });
     });
 
-    // ✅ Start server only if DB is good
     app.listen(4000, () => {
       console.log('✅ Backend running on http://localhost:4000');
     });
 
   } catch (err) {
     console.error('❌ Failed to connect to PostgreSQL or start server:', err);
-    process.exit(1); // crash the container so Render restarts
+    process.exit(1);
   }
 }
 
 startServer();
-
