@@ -6,7 +6,7 @@ const { Pool } = pkg;
 const app = express();
 
 app.use(cors({
-  origin: 'http://localhost:5173', // or '*' for production
+  origin: 'https://todo-docker-app-frontend.onrender.com', // or '*' for production
   methods: ['GET', 'POST', 'DELETE'],
   allowedHeaders: ['Content-Type'],
   credentials: true
