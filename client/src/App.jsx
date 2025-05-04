@@ -4,7 +4,8 @@ import axios from 'axios';
 function App() {
   const [todos, setTodos] = useState([]);
   const [text, setText] = useState('');
-  const API = 'http://localhost:4000';
+  const API = import.meta.env.VITE_API_URL;
+
 
 
   useEffect(() => {
