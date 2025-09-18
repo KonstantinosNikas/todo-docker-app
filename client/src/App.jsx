@@ -13,10 +13,11 @@ function App() {
   }, []);
 
   const addTodo = () => {
-    axios.post(`${API}/todos`, { text }).then(() => {
-      setTodos([{ id: Math.random(), text }, ...todos]);
+    axios.post(`${API}/todos`, { text }).then(res => {
+      setTodos([res.data, ...todos]);
       setText('');
     });
+
   };
 
   const deleteTodo = (id) => {

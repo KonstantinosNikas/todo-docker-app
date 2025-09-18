@@ -1,38 +1,56 @@
-version: '3.8'
-
 services:
   db:
-    image: postgres:15
+    image: postgres:15    # upgrade is fine; change back to 15 if you prefer
     container_name: postgres_db
-    restart: always
+    restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: tododb
     volumes:
       - pgdata:/var/lib/postgresql/data
+    # (optional) run init SQL on first boot:
+    # - ./db/init:/docker-entrypoint-initdb.d:ro
+    # expose to host only if you need pgAdmin/psql from host; otherwise remove this:
     ports:
       - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d tododb"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
 
   backend:
     build: ./server
     container_name: todo_backend
-    ports:
-      - "4000:4000"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     environment:
-      DB_HOST: db
-      DB_USER: postgres
-      DB_PASSWORD: postgres
-      DB_NAME: tododb
-      DB_PORT: 5432
+      DATABASE_URL: postgres://postgres:postgres@db:5432/tododb
+      PGHOST: db
+      PGPORT: 5432
+      PGUSER: postgres
+      PGPASSWORD: postgres
+      PGDATABASE: tododb
+    ports:
+    - "4000:4000"
+  # Dev hot-reload (optional; uncomment if you use nodemon)
+  # volumes:
+  #   - ./server:/app
+  #   - /app/node_modules
+  # command: ["npm","run","dev"]
 
   frontend:
-    build: ./client
+    image: node:20-alpine
     container_name: todo_frontend
+    working_dir: /app
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    command: sh -c "npm ci && npm run dev -- --host 0.0.0.0 --port 5173"
     ports:
-      - "5173:5173"
+      - "5173:5173"   # browse http://localhost:5174
     depends_on:
       - backend
 
