@@ -2,19 +2,19 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# Copy everything
-COPY package.json ./
+# Copy package files for dependency installation
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy the rest of the application code
 COPY . .
 
-
-# Debug: show what we copied
-RUN find /app -name "package.json" -o -name "package-lock.json" | head -10
-RUN pwd && ls -la
-
-# Install and build
-RUN npm install
+# Build the Vite application for production
 RUN npm run build
 
 EXPOSE 5173
 
+# Start the application in preview mode (production)
 CMD ["npm", "run", "preview", "--", "--host", "0.0.0.0", "--port", "5173"]

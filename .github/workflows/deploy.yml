@@ -62,6 +62,7 @@ jobs:
           context: ./client                   # Build context is the client directory
           push: true                          # Push the image to registry after building
           platforms: linux/amd64             # Target platform for the image
+          no-cache: true                      # Force fresh build to avoid cache issues
           tags: |                             # Tags to apply to the built image
             ${{ env.FRONTEND_IMAGE_NAME }}:${{ env.TAG_LATEST }}
             ${{ env.FRONTEND_IMAGE_NAME }}:${{ env.TAG_SHA }}
