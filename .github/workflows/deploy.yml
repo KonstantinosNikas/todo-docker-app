@@ -62,12 +62,9 @@ jobs:
           context: ./client                   # Build context is the client directory
           push: true                          # Push the image to registry after building
           platforms: linux/amd64             # Target platform for the image
-          no-cache: true                      # Force fresh build to avoid cache issues
           tags: |                             # Tags to apply to the built image
             ${{ env.FRONTEND_IMAGE_NAME }}:${{ env.TAG_LATEST }}
             ${{ env.FRONTEND_IMAGE_NAME }}:${{ env.TAG_SHA }}
-          cache-from: type=gha,scope=frontend # Use GitHub Actions cache for faster builds
-          cache-to: type=gha,mode=max,scope=frontend # Save build cache for future builds
 
       # Optional: Quick smoke test by running the backend image (uncomment if useful)
       # - name: Smoke test backend container
