@@ -9,9 +9,12 @@ yarn-error.log*
 .env.production.local
 .git
 .gitignore
-README.md
 Dockerfile
 .dockerignore
 coverage
 .nyc_output
 dist
+
+# Keep these files for Docker build
+!package.json
+!package-lock.json
