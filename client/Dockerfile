@@ -3,7 +3,9 @@ FROM node:18-alpine
 WORKDIR /app
 
 # Copy everything
-COPY COPY package.json ./
+COPY package.json ./
+COPY . .
+
 
 # Debug: show what we copied
 RUN find /app -name "package.json" -o -name "package-lock.json" | head -10
