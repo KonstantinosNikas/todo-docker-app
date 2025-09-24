@@ -11,8 +11,8 @@ permissions:
   id-token: write
 
 env:
-  BACKEND_IMAGE_NAME: ghcr.io/KonstantinosNikas/todo-docker-app-backend
-  FRONTEND_IMAGE_NAME: ghcr.io/KonstantinosNikas/todo-docker-app-frontend
+  BACKEND_IMAGE_NAME: ghcr.io/konstantinosnikas/todo-docker-app-backend
+  FRONTEND_IMAGE_NAME: ghcr.io/konstantinosnikas/todo-docker-app-frontend
   TAG_LATEST: latest
   TAG_SHA: ${{ github.sha }}
 
