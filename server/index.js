@@ -25,9 +25,19 @@ app.use(express.json());
 // construct connection string safely
 const DATABASE_URL =
   process.env.DATABASE_URL ||
-  `postgres://${process.env.DB_USER || 'postgres'}:${process.env.DB_PASSWORD || 'postgres'}@${process.env.DB_HOST || 'db'}:${process.env.DB_PORT || 5432}/${process.env.DB_NAME || 'tododb'}`;
+  `postgres://${process.env.DB_USER || 'postgres'}:${process.env.DB_PASSWORD || 'postgres'}@${process.env.DB_HOST || 'localhost'}:${process.env.DB_PORT || 5432}/${process.env.DB_NAME || 'tododb'}`;
 
-const pool = new Pool({ connectionString: DATABASE_URL });
+// Configure SSL for production databases (Render requires SSL)
+const poolConfig = {
+  connectionString: DATABASE_URL,
+  ...(process.env.NODE_ENV === 'production' && {
+    ssl: {
+      rejectUnauthorized: false
+    }
+  })
+};
+
+const pool = new Pool(poolConfig);
 
 // small retry loop so we don’t crash if DB comes up a tad late
 async function waitForDb(retries = 20, delayMs = 1000) {
