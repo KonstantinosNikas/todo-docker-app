@@ -11,7 +11,8 @@ permissions:
   id-token: write
 
 env:
-  IMAGE_NAME: ghcr.io/KonstantinosNikas/todo-docker-app
+  BACKEND_IMAGE_NAME: ghcr.io/KonstantinosNikas/todo-docker-app-backend
+  FRONTEND_IMAGE_NAME: ghcr.io/KonstantinosNikas/todo-docker-app-frontend
   TAG_LATEST: latest
   TAG_SHA: ${{ github.sha }}
 
@@ -33,24 +34,37 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build & Push (latest + sha tags)
+      - name: Build & Push Backend Image
         uses: docker/build-push-action@v6
         with:
-          context: .
+          context: ./server
           push: true
           platforms: linux/amd64
           tags: |
-            ${{ env.IMAGE_NAME }}:${{ env.TAG_LATEST }}
-            ${{ env.IMAGE_NAME }}:${{ env.TAG_SHA }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+            ${{ env.BACKEND_IMAGE_NAME }}:${{ env.TAG_LATEST }}
+            ${{ env.BACKEND_IMAGE_NAME }}:${{ env.TAG_SHA }}
+          cache-from: type=gha,scope=backend
+          cache-to: type=gha,mode=max,scope=backend
 
-      # Optional: quick smoke test by running the image (uncomment if useful)
-      # - name: Smoke test container
+      - name: Build & Push Frontend Image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./client
+          push: true
+          platforms: linux/amd64
+          tags: |
+            ${{ env.FRONTEND_IMAGE_NAME }}:${{ env.TAG_LATEST }}
+            ${{ env.FRONTEND_IMAGE_NAME }}:${{ env.TAG_SHA }}
+          cache-from: type=gha,scope=frontend
+          cache-to: type=gha,mode=max,scope=frontend
+
+      # Optional: Quick smoke test by running the backend image (uncomment if useful)
+      # - name: Smoke test backend container
       #   run: |
-      #     docker run -d -p 8080:8080 --name app ${{ env.IMAGE_NAME }}:${{ env.TAG_LATEST }}
+      #     docker run -d -p 4000:4000 --name backend ${{ env.BACKEND_IMAGE_NAME }}:${{ env.TAG_LATEST }}
       #     sleep 5
-      #     docker logs app
+      #     docker logs backend
+      #     docker stop backend
 
       - name: Trigger Render Deploy
         run: |
