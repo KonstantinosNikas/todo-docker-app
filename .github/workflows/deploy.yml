@@ -60,6 +60,8 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ./client                   # Build context is the client directory
+          file: ./client/Dockerfile          # Specify Dockerfile location
+          file: ./client/public/index.html  # Include public directory in build context
           push: true                          # Push the image to registry after building
           platforms: linux/amd64             # Target platform for the image
           tags: |                             # Tags to apply to the built image
