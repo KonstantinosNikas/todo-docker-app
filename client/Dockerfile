@@ -1,20 +1,18 @@
-# Use Node.js 18 Alpine for smaller image size
 FROM node:18-alpine
 
-# Set the working directory inside the container
 WORKDIR /app
 
-# Copy all files first (simpler approach)
+# Copy everything
 COPY . .
 
-# Install dependencies (including dev dependencies for build)
-RUN npm install
+# Debug: show what we copied
+RUN find /app -name "package.json" -o -name "package-lock.json" | head -10
+RUN pwd && ls -la
 
-# Build the Vite application for production
+# Install and build
+RUN npm install
 RUN npm run build
 
-# Expose the port the app runs on
 EXPOSE 5173
 
-# Start the application in preview mode (production)
 CMD ["npm", "run", "preview", "--", "--host", "0.0.0.0", "--port", "5173"]
