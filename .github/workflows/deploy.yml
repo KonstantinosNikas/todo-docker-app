@@ -59,10 +59,8 @@ jobs:
       - name: Build & Push Frontend Image
         uses: docker/build-push-action@v6
         with:
-          context: .                          # Build from repo root
-          file: ./client/Dockerfile          # Use client Dockerfile
-          build-args: |
-            PACKAGE_PATH=client               # Tell Dockerfile where to find package.json
+          context: ./client                   # Build context is the client directory
+          file: ./client/Dockerfile          # Specify Dockerfile location
           push: true                          # Push the image to registry after building
           platforms: linux/amd64             # Target platform for the image
           tags: |                             # Tags to apply to the built image
